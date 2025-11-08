@@ -1,24 +1,19 @@
-# README
+# Zion Ledger Service
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A double-entry bookkeeping ledger service built with Rails 8.1 and PostgreSQL, designed for financial accuracy, immutability, and audit compliance.
 
-Things you may want to cover:
+## System Requirements
 
-* Ruby version
+- **Ruby**: 3.3+ (check with `ruby -v`)
+- **PostgreSQL**: 18 (check with `psql --version`)
+- **Rails**: 8.1.1+
 
-* System dependencies
+## Architecture Overview
 
-* Configuration
+This is an API-only Rails application designed as a microservice for managing financial ledgers with:
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- **Double-entry bookkeeping** - Every transaction affects at least two accounts
+- **Immutable ledger entries** - Financial records are never deleted or modified
+- **ACID compliance** - PostgreSQL ensures transaction integrity
+- **Audit trail** - Complete history of all financial operations
+- **Precision arithmetic** - Uses PostgreSQL `decimal` type for money values

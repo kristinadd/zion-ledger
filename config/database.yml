@@ -17,7 +17,13 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
-  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  # Ledger service requires strict transaction isolation
+  variables:
+    statement_timeout: 5000  # 5 seconds max query time
+    lock_timeout: 2000       # 2 seconds max lock wait
+  # Enable UUID extension for better distributed ID generation
+  schema_search_path: "public"
 
 
 development:

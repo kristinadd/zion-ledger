@@ -57,9 +57,12 @@ class EntrySet < ApplicationRecord
 
   # Validation: Ensure double-entry rule is satisfied
   # The sum of all entries must equal zero
+  # Optimization: Cache total to avoid querying database twice
   def entries_must_balance_to_zero
-    unless balanced?
-      errors.add(:base, "Entries must sum to zero (double-entry rule). Current sum: #{total}")
+    current_total = total  # Query database once and store result
+
+    unless current_total.zero?
+      errors.add(:base, "Entries must sum to zero (double-entry rule). Current sum: #{current_total}")
     end
   end
 end

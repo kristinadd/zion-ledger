@@ -7,7 +7,6 @@ class CreateEntrySets < ActiveRecord::Migration[8.1]
       t.text :description
 
       t.timestamps
-
     end
   end
 end

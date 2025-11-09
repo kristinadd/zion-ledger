@@ -22,6 +22,8 @@ class Entry < ApplicationRecord
     where("committed_at >= ? AND committed_at <= ?", start_time, end_time)
   }
 
+  # scope :committed_between, ->(start_time, end_time) { where(committed_at: start_time..end_time) }
+
   scope :reporting_before, ->(time) { where("reporting_at <= ?", time) }
   scope :reporting_between, ->(start_time, end_time) {
     where("reporting_at >= ? AND reporting_at <= ?", start_time, end_time)
@@ -39,7 +41,7 @@ class Entry < ApplicationRecord
   end
 
   def amount_in_dollars
-    amount / 100.0
+    amount.to_d / 100
   end
 
   private

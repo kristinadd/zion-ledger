@@ -1,4 +1,3 @@
-# From Monzo's article:
 # "So to calculate a balance we now:
 #  1. Obtain the balance definition by looking up the provided balance identifier
 #  2. Get the list of EntrySet for the balance calculation, using the list of addresses

@@ -90,7 +90,7 @@ class BalanceCalculator
 
   def fetch_entries(address_ids, time_axis)
     # Fetch entries for the addresses, filtered by time axis
-    # This is the core of Monzo's approach: use the right timestamp
+    # This is the core of M's approach: use the right timestamp
 
     entries = Entry.where(address_id: address_ids)
 

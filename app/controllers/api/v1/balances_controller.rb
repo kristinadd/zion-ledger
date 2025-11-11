@@ -1,6 +1,3 @@
-# API V1 Balances Controller
-# Handles balance queries using Monzo's balance definition architecture
-#
 # GET /v1/accounts/:account_id/balance - Get balance for an account
 #
 # Query parameters:

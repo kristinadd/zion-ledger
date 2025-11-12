@@ -5,6 +5,32 @@
 # - committed_at and reporting_at enable two different balance views
 # - Each entry references an Address (where the money lives)
 
+# == Schema Information
+#
+# Table name: entries
+#
+#  id           :bigint           not null, primary key
+#  amount       :bigint           not null
+#  committed_at :datetime         not null
+#  reporting_at :datetime         not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  address_id   :bigint           not null
+#  entry_set_id :bigint           not null
+#
+# Indexes
+#
+#  index_entries_on_address_committed  (address_id,committed_at)
+#  index_entries_on_address_id         (address_id)
+#  index_entries_on_address_reporting  (address_id,reporting_at)
+#  index_entries_on_entry_set_created  (entry_set_id,created_at)
+#  index_entries_on_entry_set_id       (entry_set_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (address_id => addresses.id) ON DELETE => restrict
+#  fk_rails_...  (entry_set_id => entry_sets.id) ON DELETE => cascade
+#
 class Entry < ApplicationRecord
   belongs_to :entry_set
   belongs_to :address

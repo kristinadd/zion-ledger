@@ -46,4 +46,7 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Annotate models with schema information (Rails 8 compatible fork)
+  gem "annotaterb", require: false
 end

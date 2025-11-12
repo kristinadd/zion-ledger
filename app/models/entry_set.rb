@@ -16,6 +16,24 @@
 #   }
 #   Sum: -500 + 500 = 0 ✅
 
+# == Schema Information
+#
+# Table name: entry_sets
+#
+#  id              :bigint           not null, primary key
+#  committed_at    :datetime         not null
+#  description     :text
+#  idempotency_key :string           not null
+#  reporting_at    :datetime         not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_entry_sets_on_committed_at     (committed_at)
+#  index_entry_sets_on_idempotency_key  (idempotency_key) UNIQUE
+#  index_entry_sets_on_reporting_at     (reporting_at)
+#
 class EntrySet < ApplicationRecord
   has_many :entries, dependent: :destroy
 

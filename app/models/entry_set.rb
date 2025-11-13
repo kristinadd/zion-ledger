@@ -1,21 +1,3 @@
-# EntrySet represents a complete double-entry transaction in the ledger.
-#
-# Each EntrySet contains multiple Entry records that must sum to zero
-# (the fundamental rule of double-entry bookkeeping).
-#
-# Example: Coffee purchase for $5.00
-#   EntrySet {
-#     idempotency_key: "coffee_20241109_001",
-#     description: "Coffee at Starbucks",
-#     committed_at: 2024-11-09 09:00:00,
-#     reporting_at: 2024-11-11 12:00:00,
-#     entries: [
-#       Entry { address: checking_account, amount: -500 },  # -$5.00
-#       Entry { address: merchant_settlement, amount: 500 }  # +$5.00
-#     ]
-#   }
-#   Sum: -500 + 500 = 0 ✅
-
 # == Schema Information
 #
 # Table name: entry_sets

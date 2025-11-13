@@ -64,7 +64,6 @@ module Api
           :description,
           :committed_at,
           :reporting_at,
-          metadata: {},
           entries: [ :address_id, :amount ]
         )
       end

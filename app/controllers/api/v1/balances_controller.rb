@@ -1,30 +1,16 @@
-# GET /v1/accounts/:account_id/balance - Get balance for an account
-#
-# Query parameters:
-#   - balance_name: Which balance definition to use (default: "customer_facing_balance")
-#   - as_of: Calculate balance as of this time (default: now)
-#
-# Examples:
-#   GET /v1/accounts/123/balance
-#   GET /v1/accounts/123/balance?balance_name=interest_chargeable_balance
-#   GET /v1/accounts/123/balance?as_of=2024-11-01T00:00:00Z
-
 module Api
   module V1
     class BalancesController < ApplicationController
-      # GET /v1/accounts/:account_id/balance
       def show
         balance_name = params[:balance_name] || "customer_facing_balance"
         as_of = parse_time(params[:as_of]) || Time.current
         account_id = params[:account_id]
 
-        # Validate account_id
         unless account_id.present?
           render json: { error: "account_id is required" }, status: :bad_request
           return
         end
 
-        # Calculate balance using BalanceCalculator
         result = BalanceCalculator.calculate(
           balance_name: balance_name,
           account_id: account_id.to_i,

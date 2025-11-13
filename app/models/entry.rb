@@ -1,10 +1,3 @@
-# Key concepts:
-# - amount is stored as INTEGER in MINOR UNITS (cents)
-#   -500 = -$5.00 (debit/money leaving)
-#   +500 = +$5.00 (credit/money arriving)
-# - committed_at and reporting_at enable two different balance views
-# - Each entry references an Address (where the money lives)
-
 # == Schema Information
 #
 # Table name: entries

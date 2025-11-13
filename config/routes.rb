@@ -8,14 +8,11 @@ Rails.application.routes.draw do
   # API v1 routes
   namespace :api do
     namespace :v1 do
-      # POST /v1/entries - Create ledger transactions with idempotency
       resources :entries, only: [ :create ]
 
-      # GET /v1/accounts/:account_id/balance - Get account balance
-      get "accounts/:account_id/balance", to: "balances#show", as: :account_balance
+      resources :accounts, only: [] do
+        resource :balance, only: [ :show ]
+      end
     end
   end
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end

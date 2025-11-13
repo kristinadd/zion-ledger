@@ -1,35 +1,14 @@
-# API V1 Entries Controller
-# Handles creation of ledger transactions (EntrySets with Entries)
-#
-# POST /v1/entries - Create a new transaction with idempotency key
-#
-# Request format:
-# {
-#   "idempotency_key": "unique_key_123",
-#   "description": "Coffee purchase",
-#   "committed_at": "2024-11-09T10:00:00Z",
-#   "reporting_at": "2024-11-11T12:00:00Z",
-#   "entries": [
-#     { "address_id": 1, "amount": -500 },
-#     { "address_id": 2, "amount": 500 }
-#   ]
-# }
-
 module Api
   module V1
     class EntriesController < ApplicationController
-      # POST /v1/entries
       def create
-        # Use idempotent creation from EntrySet model
         entry_set = EntrySet.create_with_idempotency!(
           idempotency_key: entry_params[:idempotency_key],
           description: entry_params[:description],
           committed_at: parse_time(entry_params[:committed_at]),
-          reporting_at: parse_time(entry_params[:reporting_at]),
-          metadata: entry_params[:metadata] || {}
+          reporting_at: parse_time(entry_params[:reporting_at])
         )
 
-        # Create entries for this entry set
         entries_attributes = entry_params[:entries] || []
         entries_attributes.each do |entry_attrs|
           entry_set.entries.create!(
@@ -38,7 +17,6 @@ module Api
           )
         end
 
-        # Validate that entries balance to zero
         unless entry_set.valid?
           render json: {
             error: "Invalid entry set",
@@ -47,7 +25,6 @@ module Api
           return
         end
 
-        # Return created entry set with all entries
         render json: {
           id: entry_set.id,
           idempotency_key: entry_set.idempotency_key,

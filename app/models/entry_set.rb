@@ -23,7 +23,6 @@ class EntrySet < ApplicationRecord
   validates :committed_at, presence: true
   validate :entries_must_balance_to_zero, if: -> { entries.any? }
 
-  # Scopes for querying by time axis (M's way)
   scope :committed_before, ->(time) { where("committed_at <= ?", time) }
   scope :committed_after, ->(time) { where("committed_at >= ?", time) }
 

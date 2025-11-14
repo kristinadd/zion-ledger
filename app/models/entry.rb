@@ -38,7 +38,6 @@ class Entry < ApplicationRecord
     where("committed_at >= ? AND committed_at <= ?", start_time, end_time)
   }
 
-  # Reporting scopes - only include entries that have reporting_at set
   scope :reporting_before, ->(time) { where("reporting_at IS NOT NULL AND reporting_at <= ?", time) }
   scope :reporting_between, ->(start_time, end_time) {
     where("reporting_at IS NOT NULL AND reporting_at >= ? AND reporting_at <= ?", start_time, end_time)
@@ -58,7 +57,7 @@ class Entry < ApplicationRecord
     amount.positive?
   end
 
-  def amount_in_dollars
+  def human_amount
     amount.to_d / 100
   end
 end

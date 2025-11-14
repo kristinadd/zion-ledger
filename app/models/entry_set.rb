@@ -6,7 +6,7 @@
 #  committed_at    :datetime         not null
 #  description     :text
 #  idempotency_key :string           not null
-#  reporting_at    :datetime         not null
+#  reporting_at    :datetime
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #

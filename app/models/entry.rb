@@ -5,7 +5,7 @@
 #  id           :bigint           not null, primary key
 #  amount       :bigint           not null
 #  committed_at :datetime         not null
-#  reporting_at :datetime         not null
+#  reporting_at :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  address_id   :bigint           not null

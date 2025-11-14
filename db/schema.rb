@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_09_110235) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_14_120529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,7 +32,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_09_110235) do
     t.datetime "committed_at", null: false
     t.datetime "created_at", null: false
     t.bigint "entry_set_id", null: false
-    t.datetime "reporting_at", null: false
+    t.datetime "reporting_at"
     t.datetime "updated_at", null: false
     t.index ["address_id", "committed_at"], name: "index_entries_on_address_committed"
     t.index ["address_id", "reporting_at"], name: "index_entries_on_address_reporting"
@@ -46,7 +46,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_09_110235) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "idempotency_key", null: false
-    t.datetime "reporting_at", null: false
+    t.datetime "reporting_at"
     t.datetime "updated_at", null: false
     t.index ["committed_at"], name: "index_entry_sets_on_committed_at"
     t.index ["idempotency_key"], name: "index_entry_sets_on_idempotency_key", unique: true

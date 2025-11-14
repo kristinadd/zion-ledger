@@ -21,33 +21,24 @@ class EntrySet < ApplicationRecord
 
   validates :idempotency_key, presence: true, uniqueness: true
   validates :committed_at, presence: true
-  # reporting_at is nullable - set when transaction is fully settled
-
   validate :entries_must_balance_to_zero, if: -> { entries.any? }
 
   # Scopes for querying by time axis (M's way)
   scope :committed_before, ->(time) { where("committed_at <= ?", time) }
   scope :committed_after, ->(time) { where("committed_at >= ?", time) }
 
-  # Reporting scopes - only include entries that have reporting_at set
   scope :reporting_before, ->(time) { where("reporting_at IS NOT NULL AND reporting_at <= ?", time) }
   scope :reporting_after, ->(time) { where("reporting_at IS NOT NULL AND reporting_at >= ?", time) }
 
-  # Settlement status scopes
   scope :settled, -> { where.not(reporting_at: nil) }
   scope :pending, -> { where(reporting_at: nil) }
 
-  # Class method for idempotent creation
-  # Prevents duplicate transactions if the same idempotency_key is used
   def self.create_with_idempotency!(idempotency_key:, **attributes)
-    # First, try to find existing transaction
     existing = find_by(idempotency_key: idempotency_key)
     return existing if existing
 
     create!(idempotency_key: idempotency_key, **attributes)
   rescue ActiveRecord::RecordNotUnique
-    # Race condition: another thread created it between find_by and create
-    # Retry the find
     find_by!(idempotency_key: idempotency_key)
   end
 
@@ -61,11 +52,8 @@ class EntrySet < ApplicationRecord
 
   private
 
-  # Validation: Ensure double-entry rule is satisfied
-  # The sum of all entries must equal zero
-  # Optimization: Cache total to avoid querying database twice
   def entries_must_balance_to_zero
-    current_total = total  # Query database once and store result
+    current_total = total
 
     unless current_total.zero?
       errors.add(:base, "Entries must sum to zero (double-entry rule). Current sum: #{current_total}")

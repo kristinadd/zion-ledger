@@ -21,15 +21,21 @@ class EntrySet < ApplicationRecord
 
   validates :idempotency_key, presence: true, uniqueness: true
   validates :committed_at, presence: true
-  validates :reporting_at, presence: true
+  # reporting_at is nullable - set when transaction is fully settled
 
   validate :entries_must_balance_to_zero, if: -> { entries.any? }
 
   # Scopes for querying by time axis (M's way)
   scope :committed_before, ->(time) { where("committed_at <= ?", time) }
   scope :committed_after, ->(time) { where("committed_at >= ?", time) }
-  scope :reporting_before, ->(time) { where("reporting_at <= ?", time) }
-  scope :reporting_after, ->(time) { where("reporting_at >= ?", time) }
+
+  # Reporting scopes - only include entries that have reporting_at set
+  scope :reporting_before, ->(time) { where("reporting_at IS NOT NULL AND reporting_at <= ?", time) }
+  scope :reporting_after, ->(time) { where("reporting_at IS NOT NULL AND reporting_at >= ?", time) }
+
+  # Settlement status scopes
+  scope :settled, -> { where.not(reporting_at: nil) }
+  scope :pending, -> { where(reporting_at: nil) }
 
   # Class method for idempotent creation
   # Prevents duplicate transactions if the same idempotency_key is used

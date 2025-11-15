@@ -15,4 +15,8 @@ class EntrySet < ApplicationRecord
 
   validates :idempotency_key, presence: true, uniqueness: true
   validates :committed_at, presence: true
+
+  def balanced?
+    entries.sum(:amount) == 0
+  end
 end

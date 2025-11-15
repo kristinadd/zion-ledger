@@ -1,6 +1,5 @@
 # Address configuration file
 # Defines ledger addresses and which balance definitions they belong to
-# Following Monzo's approach: addresses are configuration patterns, not database entities
 
 addresses:
   # Customer's main account
@@ -29,9 +28,9 @@ addresses:
     balance_definitions:
       customer_facing_balance: {}
 
-  # Merchant accounts (system-level, no account_id)
+  # Merchant accounts
   "com.zion.merchant:main":
-    description: "Merchant accounts (distinguished by account_id in entries)"
+    description: "Merchant accounts"
     legal_entities:
       zion_us: ["USD"]
     balance_definitions: {}

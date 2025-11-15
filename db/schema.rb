@@ -10,8 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_14_201342) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_14_202637) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "entries", force: :cascade do |t|
+    t.string "account_id"
+    t.bigint "amount", null: false
+    t.datetime "committed_at", null: false
+    t.datetime "created_at", null: false
+    t.string "currency", null: false
+    t.bigint "entry_set_id", null: false
+    t.string "legal_entity", null: false
+    t.string "name", null: false
+    t.string "namespace", null: false
+    t.datetime "reporting_at"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "entry_sets", force: :cascade do |t|
+    t.datetime "committed_at", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "idempotency_key", null: false
+    t.datetime "reporting_at"
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "entries", "entry_sets", on_delete: :cascade
 end

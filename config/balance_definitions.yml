@@ -1,0 +1,15 @@
+# Balance definitions configuration
+# Defines balance names, time axis, and descriptions
+# Following Monzo's approach: balance definitions specify what balances exist
+
+balance_definitions:
+  # Customer-facing balance: What the user sees in the app
+  customer_facing_balance:
+    description: "The balance a customer sees in their app. It reflects real-time transactions."
+    time_axis: committed_at
+
+  # Interest chargeable balance: Excludes pending transactions
+  interest_chargeable_balance:
+    description: "Balance excluding pending transactions yet to settle. Used for calculating overdraft charges."
+    time_axis: committed_at
+

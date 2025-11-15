@@ -1,0 +1,45 @@
+# Address configuration file
+# Defines ledger addresses and which balance definitions they belong to
+# Following Monzo's approach: addresses are configuration patterns, not database entities
+
+addresses:
+  # Customer's main account
+  "com.zion.account:main":
+    description: "Represents a customer's balance in their account"
+    legal_entities:
+      zion_us: ["USD"]
+    balance_definitions:
+      customer_facing_balance: {}
+      interest_chargeable_balance: {}
+
+  # Customer's savings account
+  "com.zion.account:savings":
+    description: "Customer's savings account"
+    legal_entities:
+      zion_us: ["USD"]
+    balance_definitions:
+      customer_facing_balance: {}
+      interest_chargeable_balance: {}
+
+  # Overdraft facility
+  "com.zion.overdraft:main":
+    description: "Customer's overdraft facility"
+    legal_entities:
+      zion_us: ["USD"]
+    balance_definitions:
+      customer_facing_balance: {}
+
+  # Merchant accounts (system-level, no account_id)
+  "com.zion.merchant:main":
+    description: "Merchant accounts (distinguished by account_id in entries)"
+    legal_entities:
+      zion_us: ["USD"]
+    balance_definitions: {}
+
+  # Fee collection (system-level)
+  "com.zion.fees:transaction_fees":
+    description: "Transaction fee collection account"
+    legal_entities:
+      zion_us: ["USD"]
+    balance_definitions: {}
+

@@ -18,7 +18,7 @@ addresses:
       zion_us: ["USD"]
     balance_definitions:
       customer_facing_balance: {}
-      interest_chargeable_balance: {}
+      interest_chargeable_balance: {} 
 
   # Overdraft facility
   "com.zion.overdraft:main":

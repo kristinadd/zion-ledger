@@ -88,6 +88,6 @@ class BalanceCalculator
   end
 
   def self.human_balance(cents)
-    cents.to_f / 100
+    cents.to_d / 100
   end
 end

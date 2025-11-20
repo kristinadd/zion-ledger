@@ -16,9 +16,7 @@ addresses:
     description: "Customer's savings account"
     legal_entities:
       zion_us: ["USD"]
-    balance_definitions:
-      customer_facing_balance: {}
-      interest_chargeable_balance: {} 
+    balance_definitions: {}
 
   # Overdraft facility
   "com.zion.overdraft:main":

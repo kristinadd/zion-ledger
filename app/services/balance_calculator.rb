@@ -10,7 +10,7 @@ class BalanceCalculator
     entries = entries_for_balance(balance_name: balance_name, account_id: account_id)
     balance_in_cents = entries.sum(:amount)
 
-    convert_to_dollars(balance_in_cents)
+    human_balance(balance_in_cents)
   end
 
   private
@@ -87,7 +87,7 @@ class BalanceCalculator
     end
   end
 
-  def self.convert_to_dollars(cents)
-    cents.to_f / 100
+  def self.human_balance(cents)
+    cents.to_d / 100
   end
 end

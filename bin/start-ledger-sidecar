@@ -1,0 +1,18 @@
+#!/bin/bash
+# Start Envoy Sidecar for Ledger Service (Ingress Proxy)
+
+echo "🚀 Starting Ledger Envoy Sidecar (Ingress)..."
+echo "📥 Handles inbound traffic to Ledger service"
+echo "🔌 Listening on: http://localhost:14001"
+echo "📊 Admin UI: http://localhost:9902"
+echo ""
+echo "Press Ctrl+C to stop"
+echo ""
+
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Start Envoy with Ledger sidecar config
+envoy -c "$PROJECT_ROOT/envoy/envoy.yaml" --service-cluster ledger_service --service-node ledger_node
+

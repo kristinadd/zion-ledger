@@ -1,0 +1,75 @@
+# Envoy Sidecar Configuration for Ledger Service (Ingress Proxy)
+# This Envoy runs alongside the Ledger service and handles INBOUND traffic
+
+static_resources:
+  # LISTENER: Receives traffic from other services' egress sidecars
+  listeners:
+    - name: ingress_listener
+      address:
+        socket_address:
+          address: 0.0.0.0           # Listen on all interfaces (receive from network)
+          port_value: 14001          # Other services call localhost:14001
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: AUTO
+                route_config:
+                  name: ingress_route
+                  virtual_hosts:
+                    - name: ledger_local
+                      domains: ["*"]
+                      routes:
+                        # All traffic goes to local ledger service
+                        - match:
+                            prefix: "/"
+                          route:
+                            cluster: ledger_local
+                            timeout: 15s
+                http_filters:
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+                # Access logging
+                access_log:
+                  - name: envoy.access_loggers.stdout
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+                      log_format:
+                        text_format: |
+                          [LEDGER INGRESS] [%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+                          %RESPONSE_CODE% %DURATION%ms → local ledger
+
+  # CLUSTER: Local ledger service
+  clusters:
+    - name: ledger_local
+      type: STATIC
+      connect_timeout: 1s
+      load_assignment:
+        cluster_name: ledger_local
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      # Connect to LOCAL ledger service
+                      address: 127.0.0.1
+                      port_value: 3000       # Ledger's actual port
+      # Circuit breaker to prevent overload
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 100
+            max_pending_requests: 100
+            max_requests: 100
+            max_retries: 3
+
+# Admin interface
+admin:
+  address:
+    socket_address:
+      address: 127.0.0.1
+      port_value: 9902  # Ledger sidecar admin (different port!)
+

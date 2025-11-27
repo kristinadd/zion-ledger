@@ -28,6 +28,10 @@ static_resources:
                           route:
                             cluster: ledger_local
                             timeout: 15s
+                            request_headers_to_add:
+                              - header:
+                                  key: "X-Internal-Secret"
+                                  value: "my-default-secret"
                 http_filters:
                   - name: envoy.filters.http.router
                     typed_config:

@@ -115,4 +115,3 @@ class EntrySetCreator
     }
   end
 end
-

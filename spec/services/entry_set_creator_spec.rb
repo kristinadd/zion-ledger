@@ -238,4 +238,3 @@ RSpec.describe EntrySetCreator, type: :service do
     end
   end
 end
-

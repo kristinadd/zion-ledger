@@ -179,4 +179,3 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
     end
   end
 end
-

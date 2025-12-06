@@ -13,7 +13,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :entry_sets, only: [:create]
+      resources :entry_sets, only: [ :create ]
     end
   end
 end

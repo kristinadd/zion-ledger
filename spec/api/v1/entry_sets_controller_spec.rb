@@ -33,13 +33,13 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
   describe "POST /api/v1/entry_sets" do
     context "with valid balanced entries" do
       it "returns 201 Created" do
-        post "/api/v1/entry_sets", params: valid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: valid_payload
 
         expect(response).to have_http_status(:created)
       end
 
       it "returns the created entry set with entries" do
-        post "/api/v1/entry_sets", params: valid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: valid_payload
 
         json = JSON.parse(response.body)
         expect(json["idempotency_key"]).to eq(idempotency_key)
@@ -49,7 +49,7 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
 
       it "creates entry_set and entries in database" do
         expect {
-          post "/api/v1/entry_sets", params: valid_payload, as: :json
+          api_post "/api/v1/entry_sets", params: valid_payload
         }.to change { EntrySet.count }.by(1)
           .and change { Entry.count }.by(2)
       end
@@ -57,11 +57,11 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
 
     context "idempotency - same request replayed" do
       before do
-        post "/api/v1/entry_sets", params: valid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: valid_payload
       end
 
       it "returns 200 OK on replay" do
-        post "/api/v1/entry_sets", params: valid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: valid_payload
 
         expect(response).to have_http_status(:ok)
       end
@@ -69,7 +69,7 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
       it "returns the original entry set" do
         original_response = JSON.parse(response.body)
 
-        post "/api/v1/entry_sets", params: valid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: valid_payload
         replay_response = JSON.parse(response.body)
 
         expect(replay_response["id"]).to eq(original_response["id"])
@@ -77,14 +77,14 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
 
       it "does not create duplicate records" do
         expect {
-          post "/api/v1/entry_sets", params: valid_payload, as: :json
+          api_post "/api/v1/entry_sets", params: valid_payload
         }.not_to change { EntrySet.count }
       end
     end
 
     context "idempotency conflict - same key, different payload" do
       before do
-        post "/api/v1/entry_sets", params: valid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: valid_payload
       end
 
       it "returns 409 Conflict" do
@@ -95,7 +95,7 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
           ]
         )
 
-        post "/api/v1/entry_sets", params: different_payload, as: :json
+        api_post "/api/v1/entry_sets", params: different_payload
 
         expect(response).to have_http_status(:conflict)
       end
@@ -103,7 +103,7 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
       it "returns error details" do
         different_payload = valid_payload.merge(description: "Different description")
 
-        post "/api/v1/entry_sets", params: different_payload, as: :json
+        api_post "/api/v1/entry_sets", params: different_payload
 
         json = JSON.parse(response.body)
         expect(json["error"]).to eq("idempotency_conflict")
@@ -122,13 +122,13 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
       end
 
       it "returns 422 Unprocessable Entity" do
-        post "/api/v1/entry_sets", params: unbalanced_payload, as: :json
+        api_post "/api/v1/entry_sets", params: unbalanced_payload
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "returns validation error message" do
-        post "/api/v1/entry_sets", params: unbalanced_payload, as: :json
+        api_post "/api/v1/entry_sets", params: unbalanced_payload
 
         json = JSON.parse(response.body)
         expect(json["error"]).to eq("validation_failed")
@@ -147,13 +147,13 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
       end
 
       it "returns 422 Unprocessable Entity" do
-        post "/api/v1/entry_sets", params: invalid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: invalid_payload
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "returns validation error details" do
-        post "/api/v1/entry_sets", params: invalid_payload, as: :json
+        api_post "/api/v1/entry_sets", params: invalid_payload
 
         json = JSON.parse(response.body)
         expect(json["error"]).to eq("validation_failed")
@@ -164,7 +164,7 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
       it "returns 422 when idempotency_key is missing" do
         payload_without_key = valid_payload.except(:idempotency_key)
 
-        post "/api/v1/entry_sets", params: payload_without_key, as: :json
+        api_post "/api/v1/entry_sets", params: payload_without_key
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -172,7 +172,7 @@ RSpec.describe "API::V1::EntrySetsController", type: :request do
       it "returns 422 when committed_at is missing" do
         payload_without_committed = valid_payload.except(:committed_at)
 
-        post "/api/v1/entry_sets", params: payload_without_committed, as: :json
+        api_post "/api/v1/entry_sets", params: payload_without_committed
 
         expect(response).to have_http_status(:unprocessable_entity)
       end

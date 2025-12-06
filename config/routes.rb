@@ -12,6 +12,8 @@ Rails.application.routes.draw do
           get :available
         end
       end
+
+      resources :entry_sets, only: [ :create ]
     end
   end
 end

@@ -43,6 +43,9 @@ RSpec.configure do |config|
   # FactoryBot configuration
   config.include FactoryBot::Syntax::Methods
 
+  # Include API helpers for request specs (provides api_post, api_get, etc.)
+  config.include ApiHelpers, type: :request
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 

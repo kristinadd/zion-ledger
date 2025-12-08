@@ -28,14 +28,29 @@ static_resources:
                           route:
                             cluster: ledger_local
                             timeout: 15s
-                          request_headers_to_add:
-                            - header:
-                                key: "X-Internal-Secret"
-                                value: "zion-internal-secret-2024"
                 http_filters:
+                  # Header management filter: Forward header if present, add if missing
+                  # This ensures:
+                  # - When Rails' Envoy forwards with header → we forward it to Rails service
+                  # - When direct calls arrive without header → we add it
+                  - name: envoy.filters.http.lua
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+                      default_source_code:
+                        inline_string: |
+                          function envoy_on_request(request_handle)
+                            -- Check if X-Internal-Secret header already exists
+                            local existing_header = request_handle:headers():get("X-Internal-Secret")
+                            
+                            -- Only add header if it doesn't exist (for direct calls)
+                            if not existing_header then
+                              request_handle:headers():add("X-Internal-Secret", "zion-internal-secret-2024")
+                            end
+                            -- If header exists, do nothing - forward it as-is
+                          end
+                  
                   # Router filter - forwards requests to upstream cluster
                   # Note: Header validation is handled by Rails middleware (EnvoyVerificationMiddleware)
-                  # Envoy's job is to ADD the header via request_headers_to_add above
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router

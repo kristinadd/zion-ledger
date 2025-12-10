@@ -68,6 +68,16 @@ class EntrySetCreator
   end
 
   def validate_entries_balance!
+    # Entry set must have at least 2 entries (minimum for double-entry: debit + credit)
+    if @entries_params.empty?
+      raise UnbalancedEntries, "Entry set must have at least 2 entries. Received 0 entries."
+    end
+
+    if @entries_params.size < 2
+      raise UnbalancedEntries, "Entry set must have at least 2 entries. Received #{@entries_params.size} entry."
+    end
+
+    # Entries must sum to zero (double-entry bookkeeping requirement)
     sum = @entries_params.sum { |e| e[:amount].to_i }
 
     if sum != 0

@@ -98,6 +98,53 @@ RSpec.describe EntrySetCreator, type: :service do
       end
     end
 
+    context "with empty entries" do
+      let(:empty_entries_params) do
+        valid_params.merge(entries: [])
+      end
+
+      it "raises UnbalancedEntries error" do
+        expect {
+          EntrySetCreator.new(empty_entries_params).call
+        }.to raise_error(EntrySetCreator::UnbalancedEntries, /at least 2 entries/)
+      end
+
+      it "does not create any records" do
+        expect {
+          EntrySetCreator.new(empty_entries_params).call rescue nil
+        }.not_to change { EntrySet.count }
+      end
+    end
+
+    context "with single entry" do
+      let(:single_entry_params) do
+        valid_params.merge(
+          entries: [
+            {
+              namespace: "payments",
+              name: "revenue",
+              amount: 5000,
+              currency: "USD",
+              legal_entity: "acme_corp",
+              account_id: "user-789"
+            }
+          ]
+        )
+      end
+
+      it "raises UnbalancedEntries error" do
+        expect {
+          EntrySetCreator.new(single_entry_params).call
+        }.to raise_error(EntrySetCreator::UnbalancedEntries, /at least 2 entries/)
+      end
+
+      it "does not create any records" do
+        expect {
+          EntrySetCreator.new(single_entry_params).call rescue nil
+        }.not_to change { EntrySet.count }
+      end
+    end
+
     context "idempotency - same key, same payload" do
       it "returns existing entry set without creating new one" do
         first_result = EntrySetCreator.new(valid_params).call

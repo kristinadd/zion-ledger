@@ -21,12 +21,4 @@
 #
 class Entry < ApplicationRecord
   belongs_to :entry_set
-
-  validates :amount, presence: true
-  validates :committed_at, presence: true
-  validates :namespace, presence: true
-  validates :name, presence: true
-  validates :legal_entity, presence: true
-  validates :currency, presence: true
-  validates :amount, numericality: { other_than: 0 }
 end
